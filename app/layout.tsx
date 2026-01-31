@@ -1,66 +1,46 @@
-import type { Metadata, Viewport } from 'next'
-import { Noto_Sans, Noto_Sans_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import { Toaster } from '@/components/ui/sonner'
-import './globals.css'
-import { Header } from "@/components/header"
-import { SidebarNav } from '@/components/sidebar-nav'
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import { AppSidebar } from "@/components/app-sidebar"; // Importe a Sidebar
+import { Header } from "@/components/header";
+import { BottomNav } from "@/components/bottom-nav";
 
-const notoSans = Noto_Sans({
-  subsets: ["latin"],
-  variable: '--font-noto-sans',
-});
-
-const notoSansMono = Noto_Sans_Mono({
-  subsets: ["latin"],
-  variable: '--font-noto-sans-mono',
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Alpha Fin - Smart Financial Centralizer',
-  description: 'AI-powered financial dashboard for intelligent money management',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
-}
-
-export const viewport: Viewport = {
-  themeColor: '#09090b',
-  width: 'device-width',
-  initialScale: 1,
-}
+  title: "Alpha Stack Fin",
+  description: "Gerenciador financeiro centralizado",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
-
-
-
   return (
-    <html lang="pt-BR">
-      <body className={`${notoSans.variable} ${notoSansMono.variable} font-sans antialiased bg-zinc-950 text-zinc-100`}>
-        <Header />
-        {children}
-        <Toaster />
-        <Analytics />
-        <SidebarNav />
+    <html lang="pt-br" suppressHydrationWarning>
+      <body className={`${inter.className} min-h-screen bg-zinc-950 text-zinc-50`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header/>
+          <div className="flex h-screen w-full">
+            <AppSidebar /> 
+            <main className="flex-1 w-full p-5">
+              {children}
+            </main>
+            <BottomNav/> 
+          </div>
+          
+          <Toaster />
+
+        </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

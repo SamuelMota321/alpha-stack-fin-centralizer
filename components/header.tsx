@@ -12,7 +12,7 @@ export function Header() {
         <div className="flex size-7 items-center justify-center rounded-md bg-emerald-400/10">
           <Sparkles className="size-4 text-emerald-400" strokeWidth={1.5} />
         </div>
-        <span className="text-lg font-semibold text-zinc-100">Alpha Fin</span>
+        <span className="text-lg font-semibold text-zinc-100"></span>
       </div>
 
       <div className="flex items-center gap-2">

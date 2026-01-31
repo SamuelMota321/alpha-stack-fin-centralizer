@@ -61,7 +61,7 @@ const colorClasses: Record<string, { bg: string; text: string; icon: string }> =
   },
 }
 
-export function AnalyticsView() {
+export default function AnalyticsView() {
   return (
     <div className="space-y-6 pb-8">
       <div className="flex items-center justify-between">

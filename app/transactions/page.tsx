@@ -8,7 +8,7 @@ import { TransactionItem } from '@/components/transaction-item'
 import { CorrectionSheet } from '@/components/correction-sheet'
 import { transactions, type Transaction } from '@/lib/mock-data'
 
-export function TransactionsView() {
+export default function TransactionsView() {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
