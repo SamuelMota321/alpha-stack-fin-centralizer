@@ -11,9 +11,19 @@ import { Separator } from '@/components/ui/separator'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { bottomItems, navItems } from '@/lib/nav-items'
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
+import { signOut } from 'next-auth/react'
 
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  user: {
+    name: string | null
+    email: string | null
+    image: string | null
+  }
+}
+
+export function AppSidebar({ user }: AppSidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -48,10 +58,7 @@ export function AppSidebar() {
               </Link>
             )
           })}
-
-
         </div>
-
 
 
         <div className="mt-auto pt-4">
@@ -68,13 +75,26 @@ export function AppSidebar() {
                   {item.label}
                 </Button>
               </Link>
-
             ))}
           </div>
+
+          {user && (
+            <div className="flex items-center gap-3 px-2">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user.image || ""} />
+                <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col text-sm">
+                <span className="font-medium text-zinc-100">{user.name}</span>
+                <span className="text-xs text-zinc-500 truncate w-32">{user.email}</span>
+              </div>
+            </div>
+          )}
 
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-zinc-400 hover:bg-red-500/10 hover:text-red-400"
+            onClick={() => signOut({ callbackUrl: '/login' })}
           >
             <LogOut className="size-5" strokeWidth={1.5} />
             Sair
