@@ -45,13 +45,12 @@ export default function LoginPage() {
           <form
             action={async () => {
               "use server"
-              // Redireciona para o dashboard após o login
               await signIn("google", { redirectTo: "/dashboard" })
             }}
           >
             <Button
               variant="outline"
-              className="w-full gap-2 border-zinc-700 bg-zinc-800/50 py-5 hover:bg-zinc-800 hover:text-white"
+              className="w-full gap-2 border-zinc-400 bg-zinc-800/50 py-5 hover:bg-zinc-800 hover:text-white cursor-pointer"
               type="submit"
             >
               {/* Ícone do Google (SVG Inline) */}

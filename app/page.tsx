@@ -1,40 +1,161 @@
-'use client'
+import Link from "next/link"
+import { 
+  Sparkles, 
+  ArrowRight, 
+  Zap, 
+  ShieldCheck, 
+  PieChart 
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
 
-import { Calendar } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { BalanceChart } from '@/components/charts/balance-chart'
-import { MetricsCarousel } from '@/components/charts/metrics-carousel'
-import { SpendingDonut } from '@/components/charts/spending-donut'
-
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className='flex flex-col gap-4'>
-      {/* Date Filter */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-zinc-100">Visão Geral</h1>
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-2 border-zinc-700 bg-zinc-800/50 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100"
-        >
-          <Calendar className="size-4" strokeWidth={1.5} />
-          <span>Janeiro 2024</span>
-        </Button>
-      </div>
+    <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-50 selection:bg-emerald-500/30 overflow-x-hidden">
+      
+      {/* Header Fixo */}
+      <header className="fixed top-0 z-50 w-full border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl supports-[backdrop-filter]:bg-zinc-950/60">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+          
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-400/10 ring-1 ring-emerald-400/20">
+              <Sparkles className="size-4 text-emerald-400" strokeWidth={1.5} />
+            </div>
+            <span className="text-lg font-bold tracking-tight hidden xs:block">Alpha Fin</span>
+          </div>
 
-      {/* Hero Balance Evolution Chart */}
-      <BalanceChart />
+          {/* Nav Actions - Ajustado para caber os 2 botões no mobile */}
+          <nav className="flex items-center gap-2">
+            <Link href="/login">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-zinc-400 hover:text-zinc-100 h-9 px-3 text-xs md:text-sm md:h-10 md:px-4"
+              >
+                Entrar
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button 
+                size="sm" 
+                className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-medium h-9 px-3 text-xs md:text-sm md:h-10 md:px-4"
+              >
+                Começar
+              </Button>
+            </Link>
+          </nav>
+        </div>
+      </header>
 
-      {/* Metrics Carousel - Horizontal Scroll */}
-      <section>
-        <h2 className="mb-3 text-sm font-medium text-zinc-400">Indicadores</h2>
-        <MetricsCarousel />
-      </section>
+      {/* Main com Padding Top para compensar o Header Fixo */}
+      <main className="flex-1 pt-20"> 
+        
+        {/* Hero Section */}
+        <section className="relative flex flex-col items-center justify-center py-16 md:py-32 px-4 text-center">
+          
+          {/* Efeito de fundo (Glow) Centralizado */}
+          <div className="absolute top-1/2 left-1/2 -z-10 h-50 w-[200px] md:h-[500px] md:w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[60px] md:blur-[100px]" />
 
-      {/* Spending Breakdown */}
-      <section>
-        <SpendingDonut />
-      </section>
+          <div className="mb-6 inline-flex items-center rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-xs md:text-sm text-emerald-400 backdrop-blur-sm shadow-sm">
+            <span className="flex size-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+            MVP Alpha Release
+          </div>
+
+          {/* Headline Controlada (max-w) */}
+          <h1 className="max-w-4xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-7xl mb-6 leading-[1.1]">
+            Automação gera <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">
+              Clareza Financeira
+            </span>
+          </h1>
+
+          <p className="max-w-2xl text-base md:text-lg text-zinc-400 mb-10 leading-relaxed">
+            Elimine a cegueira dos dados fragmentados. Centralize bancos e investimentos em uma visão unificada sem planilhas manuais.
+          </p>
+
+          {/* Botões ajustados: Full width no mobile, Auto width no desktop */}
+          <div className="flex flex-col w-full xs:w-auto sm:flex-row gap-3 md:gap-4 justify-center">
+            <Link href="/login" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto h-12 px-8 text-base bg-emerald-500 text-zinc-950 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20">
+                Solicitar Acesso
+                <ArrowRight className="ml-2 size-4" />
+              </Button>
+            </Link>
+            <Link href="#features" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto h-12 px-8 text-base border-zinc-700 bg-zinc-900/50 hover:bg-zinc-800 text-zinc-300 hover:text-white">
+                Entenda o Conceito
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Feature Grid Section */}
+        <section id="features" className="container mx-auto py-16 md:py-24 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            
+            {/* Card 1 */}
+            <div className="group flex flex-col justify-between rounded-3xl border border-zinc-800 bg-zinc-900 p-6 md:p-8 shadow-xl transition-all hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/10">
+              <div>
+                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-2xl bg-zinc-950 text-emerald-400 ring-1 ring-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-zinc-950 transition-colors duration-300">
+                  <Zap className="size-6" />
+                </div>
+                <h3 className="mb-3 text-xl font-bold text-zinc-100">Zero Input Manual</h3>
+                <p className="text-zinc-400 leading-relaxed text-sm md:text-base">
+                  Conexão direta com Open Finance e B3. Importação automática de cada transação sem esforço.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2 */}
+            <div className="group flex flex-col justify-between rounded-3xl border border-zinc-800 bg-zinc-900 p-6 md:p-8 shadow-xl transition-all hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/10">
+              <div>
+                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-2xl bg-zinc-950 text-emerald-400 ring-1 ring-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-zinc-950 transition-colors duration-300">
+                  <PieChart className="size-6" />
+                </div>
+                <h3 className="mb-3 text-xl font-bold text-zinc-100">Visão Unificada</h3>
+                <p className="text-zinc-400 leading-relaxed text-sm md:text-base">
+                  Fluxo de caixa bancário e carteira de investimentos em uma única tela de saúde financeira.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3 */}
+            <div className="group flex flex-col justify-between rounded-3xl border border-zinc-800 bg-zinc-900 p-6 md:p-8 shadow-xl transition-all hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/10">
+              <div>
+                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-2xl bg-zinc-950 text-emerald-400 ring-1 ring-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-zinc-950 transition-colors duration-300">
+                  <ShieldCheck className="size-6" />
+                </div>
+                <h3 className="mb-3 text-xl font-bold text-zinc-100">Dados Seguros</h3>
+                <p className="text-zinc-400 leading-relaxed text-sm md:text-base">
+                  Criptografia rigorosa em trânsito e repouso. Isolamento total dos seus dados financeiros.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Final */}
+        <section className="border-t border-zinc-800 bg-zinc-900/30 py-20 px-4 text-center">
+          <div className="container mx-auto max-w-2xl">
+            <h2 className="text-3xl font-bold tracking-tight text-white mb-6">
+              Retome o controle hoje.
+            </h2>
+            <Link href="/login">
+              <Button size="lg" className="h-12 px-8 text-base bg-emerald-500 text-zinc-950 hover:bg-emerald-400 rounded-full shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all">
+                Acessar Plataforma
+              </Button>
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-800 bg-zinc-950 py-8 text-center text-sm text-zinc-500 px-4">
+        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <p>&copy; {new Date().getFullYear()} Alpha Stack Fin.</p>
+          <p className="text-zinc-600">Desenvolvido para alta fidelidade.</p>
+        </div>
+      </footer>
     </div>
   )
 }

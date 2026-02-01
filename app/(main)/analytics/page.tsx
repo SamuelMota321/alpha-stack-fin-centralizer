@@ -63,12 +63,12 @@ const colorClasses: Record<string, { bg: string; text: string; icon: string }> =
 
 export default function AnalyticsView() {
   return (
-    <div className="space-y-6 pb-8">
+    <div className='flex flex-col gap-10'>
+      
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-zinc-100">Análises</h1>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3">
         {statsCards.map((stat) => {
           const colors = colorClasses[stat.color]
