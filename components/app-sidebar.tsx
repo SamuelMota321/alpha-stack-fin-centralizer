@@ -14,7 +14,7 @@ import { signOut } from 'next-auth/react'
 
 
 interface AppSidebarProps {
-  user?: { 
+  user?: {
     name?: string | null
     email?: string | null
     image?: string | null
@@ -25,7 +25,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
   const pathname = usePathname()
 
   return (
-    <aside className="h-100 w-72 flex-col border-r border-zinc-800 bg-zinc-900 hidden md:flex left-0 top-0">
+    <aside className="w-72 h-screen flex-col border-r border-zinc-800 bg-zinc-900 hidden md:flex left-0 top-0">
       <div className="border-b border-zinc-800 px-4 py-4">
         <div className="flex items-center gap-2 text-zinc-100">
           <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-400/10">
@@ -61,25 +61,10 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
         <div className="mt-auto pt-4">
           <Separator className="mb-4 bg-zinc-800" />
-          <div className="space-y-1">
-            {bottomItems.map((item) => (
-              <Link key={item.id} href={item.href} className='block'>
-                <Button
-                  key={item.id}
-                  variant="ghost"
-                  className="w-full justify-start gap-3 text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
-                >
-                  <item.icon className="size-5" strokeWidth={1.5} />
-                  {item.label}
-                </Button>
-              </Link>
-            ))}
-          </div>
-
           {user && (
             <div className="flex items-center gap-3 px-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user.image || ""} />
+                <AvatarImage src={user.image || ""} className='rounded-2xl' />
                 <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col text-sm">
@@ -89,10 +74,24 @@ export function AppSidebar({ user }: AppSidebarProps) {
             </div>
           )}
 
+          {bottomItems.map((item) => (
+            <Link key={item.id} href={item.href} className='block'>
+              <Button
+                key={item.id}
+                variant="ghost"
+                className="w-full justify-start gap-3 text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
+              >
+                <item.icon className="size-5" strokeWidth={1.5} />
+                {item.label}
+              </Button>
+            </Link>
+          ))}
+
+
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-zinc-400 hover:bg-red-500/10 hover:text-red-400"
-            onClick={() => signOut({ callbackUrl: '/login' })}
+            onClick={() => signOut({ callbackUrl: '/' })}
           >
             <LogOut className="size-5" strokeWidth={1.5} />
             Sair

@@ -30,7 +30,7 @@ export default function LoginPage() {
           <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-emerald-400/10 ring-1 ring-emerald-400/20">
             <Sparkles className="size-6 text-emerald-400" strokeWidth={1.5} />
           </div>
-          
+
           <div className="space-y-1">
             <CardTitle className="text-2xl font-bold tracking-tight text-white">
               Bem-vindo de volta
@@ -83,21 +83,37 @@ export default function LoginPage() {
           </div>
 
           {/* Formulário de Email (Visual - Funcionalidade Futura) */}
-          <form className="space-y-4">
+          <form
+            className="space-y-4"
+            action={async (formData) => {
+              "use server"
+              await signIn("credentials", {
+                email: formData.get("email"),
+                password: formData.get("password"),
+                redirectTo: "/dashboard",
+              })
+            }}
+          >
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-zinc-300">Email</Label>
+              <Label htmlFor="email" className="text-zinc-300">
+                Email
+              </Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="seunome@exemplo.com"
                 className="border-zinc-700 bg-zinc-950/50 text-zinc-100 focus-visible:ring-emerald-400/50"
+                required
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-zinc-300">Senha</Label>
+                <Label htmlFor="password" className="text-zinc-300">
+                  Senha
+                </Label>
                 <Link
-                  href="#"
+                  href="#" // Futuramente: /forgot-password
                   className="text-xs text-emerald-400 hover:text-emerald-300 hover:underline"
                 >
                   Esqueceu a senha?
@@ -105,13 +121,16 @@ export default function LoginPage() {
               </div>
               <Input
                 id="password"
+                name="password"
                 type="password"
+                placeholder="Digite sua senha"
                 className="border-zinc-700 bg-zinc-950/50 text-zinc-100 focus-visible:ring-emerald-400/50"
+                required
               />
             </div>
             <Button
-              type="button" // Mude para 'submit' quando implementar Credenciais
-              className="w-full bg-zinc-100 text-zinc-900 hover:bg-zinc-200"
+              type="submit"
+              className="w-full bg-zinc-100 text-zinc-900 hover:bg-zinc-200 cursor-pointer font-medium"
             >
               Entrar
             </Button>
@@ -121,7 +140,7 @@ export default function LoginPage() {
         <CardFooter className="flex flex-col gap-4 border-t border-zinc-800 pt-6">
           <p className="text-center text-xs text-zinc-500">
             Não tem uma conta?{" "}
-            <Link href="#" className="text-emerald-400 hover:underline">
+            <Link href="/register" className="text-emerald-400 hover:underline">
               Cadastre-se
             </Link>
           </p>

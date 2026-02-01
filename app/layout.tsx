@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description: "Gerenciador financeiro centralizado",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br" suppressHydrationWarning>
+    <html lang="pt-br" suppressHydrationWarning className="scroll-smooth">
       <body className={`${inter.className} min-h-screen bg-zinc-950 text-zinc-50`}>
         <ThemeProvider
           attribute="class"

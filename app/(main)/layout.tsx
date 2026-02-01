@@ -11,16 +11,16 @@ export default async function MainLayout({
 }>) {
   const session = await auth();
 
-  // if (!session?.user) {
-  //   redirect("/login");
-  // }
+  if (!session?.user) {
+    redirect("/login");
+  }
 
   return (
     <>
-      <Header />
-      <div className="flex w-full">
+      <Header user={session?.user} />
+      <div className="flex h-full w-full">
         <AppSidebar user={session?.user} />
-        <main className="flex-1 h-100 w-full p-5 overflow-auto">
+        <main className="flex-1 w-full p-5 overflow-auto">
           {children}
         </main>
         <BottomNav />
