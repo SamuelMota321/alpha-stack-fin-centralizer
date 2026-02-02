@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
 import { FirestoreAdapter } from "@auth/firebase-adapter"
-import { firestore } from "./firestore"
+import { firestore, authAdmin } from "./firestore"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: FirestoreAdapter(firestore),
@@ -11,7 +11,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
-      allowDangerousEmailAccountLinking: true
+      allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
       name: "Credentials",
@@ -23,8 +23,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!credentials?.email || !credentials?.password) return null
 
         const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY
-        if (!apiKey) throw new Error("API Key do Firebase não configurada.")
-
         const res = await fetch(
           `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
           {
@@ -39,49 +37,84 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         )
 
         const data = await res.json()
-
-        if (!res.ok || !data.localId) {
-          console.error("Erro Auth:", data.error?.message)
-          return null
-        }
-
-        const uid = data.localId
+        if (!res.ok || !data.localId) return null
 
         try {
-            const userDoc = await firestore.collection("users").doc(uid).get()
-            const dbUser = userDoc.data()
-            const finalName = dbUser?.name || data.displayName || null
-            const finalImage = dbUser?.image || dbUser?.picture || null 
+          const userDoc = await firestore.collection("users").doc(data.localId).get()
+          const dbUser = userDoc.data()
+          console.log("data dbUser: ",dbUser)
 
-            return {
-                id: uid,
-                email: data.email,
-                name: finalName,
-                image: finalImage,
-            }
+          return {
+            id: data.localId,
+            email: data.email,
+            name: dbUser?.name ,
+            image: dbUser?.image || null,
+          }
         } catch (error) {
-            console.error("Erro ao buscar perfil no Firestore:", error)
-            return {
-                id: uid,
-                email: data.email,
-                name: data.displayName,
-            }
+          console.error("Erro ao buscar perfil:", error)
+          return {
+            id: data.localId,
+            email: data.email,
+            name: data.displayName,
+            image: null
+          }
         }
       },
     }),
   ],
-  pages: {
-    signIn: "/login",
+  events: {
+    async createUser({ user }) {
+      if (user.email && user.id) {
+        try {
+          await authAdmin.createUser({
+            uid: user.id,
+            email: user.email,
+            displayName: user.name || undefined,
+            photoURL: user.image || undefined,
+            emailVerified: true,
+          })
+          console.log(`Usuário sincronizado no Auth: ${user.email}`)
+        } catch (error: any) {
+          if (error.code !== 'auth/uid-already-exists' && error.code !== 'auth/email-already-exists') {
+            console.error("Erro ao sincronizar usuário criado:", error)
+          }
+        }
+      }
+    },
   },
   callbacks: {
+    // código gambiarra para fazer consertar brainsplit entre o next-auth e o firestore
+    // ele gera "Falha ao corrigir usuário no Auth: Error: The email address is already in use by another account." caso o a conta já exista
+    // Anotação: melhorar essa lógica depois 
+    async signIn({ user, account }) {
+      if (account?.provider === "google" && user.email && user.id) {
+        try {
+          await authAdmin.getUser(user.id)
+        } catch (error: any) {
+          if (error.code === 'auth/user-not-found') {
+            try {
+              await authAdmin.createUser({
+                uid: user.id,
+                email: user.email,
+                displayName: user.name || undefined,
+                photoURL: user.image || undefined,
+                emailVerified: true,
+              })
+              console.log(`Correção: Usuário ${user.email} recriado no Auth.`)
+            } catch (createError) {
+              console.error("Falha ao corrigir usuário no Auth:", createError)
+            }
+          }
+        }
+      }
+      return true
+    },
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.sub = user.id
         token.picture = user.image
         token.name = user.name
       }
-      
-      // Permite atualizar a sessão no front-end sem relogar (ex: usuário trocou a foto)
       if (trigger === "update" && session?.user) {
         token.name = session.user.name;
         token.picture = session.user.image;
@@ -96,5 +129,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return session
     }
-  }
+  },
+  pages: {
+    signIn: "/login",
+  },
 })

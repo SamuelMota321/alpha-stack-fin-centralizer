@@ -1,13 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Sparkles, Loader2 } from "lucide-react"
-import { signIn } from "next-auth/react" 
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
-import { doc, setDoc } from "firebase/firestore"
-import { auth, db } from "@/lib/firebase-client" 
+import { signIn } from "next-auth/react"
+import { createUserWithEmailAndPassword, getRedirectResult, GoogleAuthProvider, signInWithRedirect, updateProfile } from "firebase/auth"
+import { auth, db } from "@/lib/firebase-client"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +21,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
+import { doc, setDoc, getDocs, query, collection, where } from "firebase/firestore"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -38,6 +38,14 @@ export default function RegisterPage() {
     const password = formData.get("password") as string
 
     try {
+      const usersRef = collection(db, "users")
+      const q = query(usersRef, where("email", "==", email))
+      const querySnapshot = await getDocs(q)
+
+      if (!querySnapshot.empty) {
+        throw { code: 'custom/email-in-use-firestore' }
+      }
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
 
@@ -49,9 +57,9 @@ export default function RegisterPage() {
         image: null,
         emailVerified: null,
         openFinance: {
-            customerId: null,
-            connectedAccounts: [],
-            status: "inactive"
+          customerId: null,
+          connectedAccounts: [],
+          status: "inactive"
         },
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -80,10 +88,10 @@ export default function RegisterPage() {
     } catch (error: any) {
       console.error(error)
       let errorMessage = "Ocorreu um erro ao criar sua conta."
-      
-      // Tratamento de erros comuns do Firebase
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = "Este e-mail já está cadastrado. Tente fazer login."
+
+      // Tratamento de erros
+      if (error.code === 'auth/email-already-in-use' || error.code === 'custom/email-in-use-firestore') {
+        errorMessage = "Este e-mail já está cadastrado. Tente fazer login com Google ou Senha."
       } else if (error.code === 'auth/weak-password') {
         errorMessage = "A senha deve ter pelo menos 6 caracteres."
       } else if (error.code === 'auth/invalid-email') {
@@ -95,9 +103,10 @@ export default function RegisterPage() {
         title: "Erro no cadastro",
         description: errorMessage,
       })
+
     } finally {
       setIsLoading(false)
-    } 
+    }
   }
 
   const handleGoogleSignIn = () => {
@@ -170,7 +179,7 @@ export default function RegisterPage() {
                 disabled={isLoading}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="email" className="text-zinc-300">Email</Label>
               <Input

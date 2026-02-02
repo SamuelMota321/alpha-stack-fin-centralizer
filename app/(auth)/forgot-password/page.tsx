@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { sendPasswordResetEmail } from "firebase/auth"
-import { auth } from "@/lib/firebase-client" // Seu arquivo client
+import { auth } from "@/lib/firebase-client"
 import { ArrowLeft, Mail, Loader2, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
