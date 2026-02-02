@@ -70,11 +70,9 @@ export function Header({ user }: HeaderProps) {
               <Bell className="size-5" strokeWidth={1.5} />
               <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-emerald-400" />
             </Button>
-            <Avatar className="size-8 border border-zinc-700">
-              <AvatarImage src="/placeholder-user.jpg" alt="Usuário" />
-              <AvatarFallback className="bg-zinc-800 text-xs text-zinc-300">
-                JD
-              </AvatarFallback>
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.image || ""} className='rounded-2xl' />
+              <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
             </Avatar>
           </div>
         </header>

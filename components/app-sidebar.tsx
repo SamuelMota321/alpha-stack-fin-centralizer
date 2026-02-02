@@ -23,7 +23,6 @@ interface AppSidebarProps {
 
 export function AppSidebar({ user }: AppSidebarProps) {
   const pathname = usePathname()
-  console.log("appsidebar: ",user)
   return (
     <aside className="w-72 h-screen flex-col border-r border-zinc-800 bg-zinc-900 hidden md:flex left-0 top-0">
       <div className="border-b border-zinc-800 px-4 py-4">

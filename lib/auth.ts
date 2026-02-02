@@ -35,29 +35,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             headers: { "Content-Type": "application/json" },
           }
         )
-
         const data = await res.json()
         if (!res.ok || !data.localId) return null
-
-        try {
-          const userDoc = await firestore.collection("users").doc(data.localId).get()
-          const dbUser = userDoc.data()
-          console.log("data dbUser: ",dbUser)
-
-          return {
-            id: data.localId,
-            email: data.email,
-            name: dbUser?.name ,
-            image: dbUser?.image || null,
-          }
-        } catch (error) {
-          console.error("Erro ao buscar perfil:", error)
-          return {
-            id: data.localId,
-            email: data.email,
-            name: data.displayName,
-            image: null
-          }
+        
+        return {
+          id: data.localId,
+          email: data.email,
+          name: data.displayName,
+          image: data.profilePicture || null,
         }
       },
     }),

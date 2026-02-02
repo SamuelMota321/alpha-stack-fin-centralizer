@@ -4,7 +4,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-export default async function MainLayout({
+export default async function UserLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -17,14 +17,10 @@ export default async function MainLayout({
 
   return (
     <>
-      <Header user={session?.user} />
-      <div className="flex h-full w-full">
-        <AppSidebar user={session?.user} />
-        <main className="flex-1 w-full px-5 pt-2 overflow-auto">
-          {children}
-        </main>
-        <BottomNav />
-      </div>
+      {/* <Header user={session?.user} /> */} {/*Integração do header tbm no futuro*/}
+      <main>
+        {children}
+      </main>
     </>
   );
 }
