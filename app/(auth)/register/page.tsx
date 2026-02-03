@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Sparkles, Loader2 } from "lucide-react"
 import { signIn } from "next-auth/react"
-import { createUserWithEmailAndPassword, getRedirectResult, GoogleAuthProvider, signInWithRedirect, updateProfile } from "firebase/auth"
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { auth, db } from "@/lib/firebase-client"
 
 import { Button } from "@/components/ui/button"
